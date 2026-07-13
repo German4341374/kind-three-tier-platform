@@ -12,6 +12,7 @@ metadata:
   namespace: task-data
 spec:
   clusterIP: None
+  publishNotReadyAddresses: true
   selector:
     app.kubernetes.io/name: postgres
   ports:
@@ -58,6 +59,9 @@ spec:
           envFrom:
             - secretRef:
                 name: postgres-credentials
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           ports:
             - name: postgres
               containerPort: 5432
