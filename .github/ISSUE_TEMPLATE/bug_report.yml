@@ -1,0 +1,17 @@
+name: Bug report
+description: Report a reproducible local-cluster or application problem.
+body:
+  - type: textarea
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Reproduction steps
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Environment
+      description: Include OS, Docker, kind, and kubectl versions without credentials.

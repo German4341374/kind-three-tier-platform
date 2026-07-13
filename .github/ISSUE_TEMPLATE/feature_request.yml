@@ -1,0 +1,11 @@
+name: Feature request
+description: Suggest a scoped portfolio or platform improvement.
+body:
+  - type: textarea
+    attributes:
+      label: Proposed improvement
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Trade-offs

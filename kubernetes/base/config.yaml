@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+  namespace: task-app
+data:
+  APP_ENV: production
+  LOG_LEVEL: INFO
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: api-database
+  namespace: task-app
+type: Opaque
+stringData:
+  # Safe local placeholder. Never reuse this value outside the disposable kind demo.
+  DATABASE_URL: postgresql+psycopg://task_user:local-demo-only@postgres.task-data.svc.cluster.local:5432/tasks
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-credentials
+  namespace: task-data
+type: Opaque
+stringData:
+  POSTGRES_DB: tasks
+  POSTGRES_USER: task_user
+  # Safe local placeholder. Use an external secret manager outside this demo.
+  POSTGRES_PASSWORD: local-demo-only

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kind Task Board</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main>
+      <p class="eyebrow">Kubernetes portfolio demo</p>
+      <h1>Kind Task Board</h1>
+      <form id="task-form">
+        <label for="title">New task</label>
+        <div class="row">
+          <input id="title" required maxlength="200" placeholder="Review the rollout">
+          <button type="submit">Add task</button>
+        </div>
+      </form>
+      <p id="status" role="status"></p>
+      <ul id="tasks"></ul>
+    </main>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

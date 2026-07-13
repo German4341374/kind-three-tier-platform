@@ -1,0 +1,65 @@
+name: Kubernetes CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kubernetes-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-validation:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.0
+      - uses: actions/setup-python@v6.3.0
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: |
+            api/requirements.txt
+            api/requirements-dev.txt
+      - name: Install pinned Python dependencies
+        run: python -m pip install --disable-pip-version-check yamllint==1.38.0 -r api/requirements-dev.txt
+      - name: Install pinned Kubernetes validation tools
+        run: bash scripts/install-tools.sh
+      - name: Add local tools to PATH
+        run: echo "$GITHUB_WORKSPACE/.tools/bin" >> "$GITHUB_PATH"
+      - name: Lint Python
+        run: cd api && ruff check app tests
+      - name: Run API unit tests
+        run: cd api && pytest -q
+      - name: Validate Kubernetes manifests and security
+        run: bash scripts/validate.sh
+
+  kind-smoke:
+    needs: static-validation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7.0.0
+      - name: Install pinned Kubernetes tools
+        run: bash scripts/install-tools.sh
+      - name: Add local tools to PATH
+        run: echo "$GITHUB_WORKSPACE/.tools/bin" >> "$GITHUB_PATH"
+      - name: Create cluster and deploy development overlay
+        run: bash scripts/cluster.sh create
+      - name: Run application smoke test
+        run: bash scripts/smoke-test.sh
+      - name: Demonstrate controlled rollback
+        run: bash scripts/rollback-demo.sh
+      - name: Collect diagnostics
+        if: always()
+        run: |
+          kubectl get all -A
+          kubectl get events -A --sort-by=.lastTimestamp | tail -100
+      - name: Delete kind cluster
+        if: always()
+        run: bash scripts/cluster.sh delete
