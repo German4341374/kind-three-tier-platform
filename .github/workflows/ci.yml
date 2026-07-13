@@ -60,6 +60,11 @@ jobs:
         run: |
           kubectl get all -A
           kubectl get events -A --sort-by=.lastTimestamp | tail -100
+          kubectl describe pods -n task-app || true
+          kubectl describe pods -n task-data || true
+          kubectl logs -n task-app -l app.kubernetes.io/name=api --all-containers --prefix --tail=100 || true
+          kubectl logs -n task-app -l app.kubernetes.io/name=frontend --all-containers --prefix --tail=100 || true
+          kubectl logs -n task-data -l app.kubernetes.io/name=postgres --all-containers --prefix --tail=100 || true
       - name: Delete kind cluster
         if: always()
         run: bash scripts/cluster.sh delete
