@@ -1,5 +1,5 @@
-fastapi==0.115.8
-psycopg[binary]==3.2.5
-pydantic-settings==2.8.1
-SQLAlchemy==2.0.38
-uvicorn[standard]==0.34.0
+fastapi==0.141.1
+psycopg[binary]==3.3.4
+pydantic-settings==2.14.2
+SQLAlchemy==2.0.51
+uvicorn[standard]==0.52.1

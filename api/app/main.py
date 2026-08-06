@@ -2,6 +2,7 @@ import json
 import logging
 import sys
 from collections.abc import Generator
+from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from sqlalchemy import select, text
@@ -24,12 +25,15 @@ logger = logging.getLogger("task-api")
 app = FastAPI(title="Kind Task API", version="1.0.0")
 
 
-def get_db() -> Generator[Session, None, None]:
+def get_db() -> Generator[Session]:
     session = SessionLocal()
     try:
         yield session
     finally:
         session.close()
+
+
+DatabaseSession = Annotated[Session, Depends(get_db)]
 
 
 @app.get("/health/live")
@@ -38,7 +42,7 @@ def live() -> dict[str, str]:
 
 
 @app.get("/health/ready")
-def ready(db: Session = Depends(get_db)) -> dict[str, str]:
+def ready(db: DatabaseSession) -> dict[str, str]:
     try:
         db.execute(text("SELECT 1"))
     except Exception as exc:
@@ -48,12 +52,12 @@ def ready(db: Session = Depends(get_db)) -> dict[str, str]:
 
 
 @app.get("/api/tasks", response_model=list[TaskRead])
-def list_tasks(db: Session = Depends(get_db)) -> list[Task]:
+def list_tasks(db: DatabaseSession) -> list[Task]:
     return list(db.scalars(select(Task).order_by(Task.id)).all())
 
 
 @app.post("/api/tasks", response_model=TaskRead, status_code=status.HTTP_201_CREATED)
-def create_task(payload: TaskCreate, db: Session = Depends(get_db)) -> Task:
+def create_task(payload: TaskCreate, db: DatabaseSession) -> Task:
     task = Task(title=payload.title)
     db.add(task)
     db.commit()
