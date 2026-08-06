@@ -51,8 +51,27 @@ jobs:
         run: echo "$GITHUB_WORKSPACE/.tools/bin" >> "$GITHUB_PATH"
       - name: Create cluster and deploy development overlay
         run: bash scripts/cluster.sh create
-      - name: Run application smoke test
-        run: bash scripts/smoke-test.sh
+      - name: Run application smoke test through Ingress
+        run: |
+          kubectl --namespace ingress-nginx port-forward service/ingress-nginx-controller 18080:80 \
+            > ingress-port-forward.log 2>&1 &
+          forward_pid=$!
+          trap 'kill "$forward_pid" 2>/dev/null || true' EXIT
+
+          for attempt in {1..30}; do
+            if curl --fail --silent --show-error \
+              --header "Host: task.localhost" \
+              http://127.0.0.1:18080/healthz > /dev/null; then
+              break
+            fi
+            if [[ "$attempt" -eq 30 ]]; then
+              cat ingress-port-forward.log
+              exit 1
+            fi
+            sleep 2
+          done
+
+          BASE_URL=http://127.0.0.1:18080 bash scripts/smoke-test.sh
       - name: Demonstrate controlled rollback
         run: bash scripts/rollback-demo.sh
       - name: Collect diagnostics
@@ -62,9 +81,12 @@ jobs:
           kubectl get events -A --sort-by=.lastTimestamp | tail -100
           kubectl describe pods -n task-app || true
           kubectl describe pods -n task-data || true
+          kubectl describe pods -n ingress-nginx || true
+          kubectl logs -n ingress-nginx deployment/ingress-nginx-controller --tail=150 || true
           kubectl logs -n task-app -l app.kubernetes.io/name=api --all-containers --prefix --tail=100 || true
           kubectl logs -n task-app -l app.kubernetes.io/name=frontend --all-containers --prefix --tail=100 || true
           kubectl logs -n task-data -l app.kubernetes.io/name=postgres --all-containers --prefix --tail=100 || true
+          cat ingress-port-forward.log || true
       - name: Delete kind cluster
         if: always()
         run: bash scripts/cluster.sh delete
