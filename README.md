@@ -1,4 +1,4 @@
-# Local Kubernetes Three-Tier Platform
+# Local Kubernetes Three Tier Platform
 
 [![Kubernetes CI](https://github.com/German4341374/kind-three-tier-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/German4341374/kind-three-tier-platform/actions/workflows/ci.yml)
 
