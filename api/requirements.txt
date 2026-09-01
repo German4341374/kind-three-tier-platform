@@ -2,6 +2,6 @@ fastapi==0.141.1
 h11==0.16.0
 idna==3.18
 psycopg[binary]==3.3.4
-pydantic-settings==2.14.2
+pydantic-settings==2.15.0
 SQLAlchemy==2.0.51
 uvicorn[standard]==0.52.1
