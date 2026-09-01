@@ -3,5 +3,5 @@ h11==0.16.0
 idna==3.18
 psycopg[binary]==3.3.4
 pydantic-settings==2.14.2
-SQLAlchemy==2.0.51
+SQLAlchemy==2.0.52
 uvicorn[standard]==0.52.1
