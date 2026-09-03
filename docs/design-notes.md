@@ -1,4 +1,4 @@
-# Interview Questions and Answers
+# Design notes
 
 ## 1. Why use kind?
 
@@ -106,7 +106,7 @@ Compare the Service selector with pod labels, verify readiness, inspect Endpoint
 
 ## 27. Is this production Kubernetes?
 
-No. It demonstrates production-style workload controls on a disposable local control plane. It lacks managed control-plane HA, durable storage, backups, TLS, and organizational operations.
+No. It exercises workload controls on a disposable local control plane. It lacks managed control-plane HA, durable storage, backups, TLS, and organizational operations.
 
 ## 28. Why run kind in CI?
 
