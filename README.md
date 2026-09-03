@@ -2,7 +2,7 @@
 
 [![Kubernetes CI](https://github.com/German4341374/kind-three-tier-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/German4341374/kind-three-tier-platform/actions/workflows/ci.yml)
 
-A complete local Kubernetes portfolio project built with kind. It deploys a small task manager with a static frontend, FastAPI service, PostgreSQL, NGINX Ingress, enforced network policies, persistent storage, autoscaling, and development/production-style Kustomize overlays. It requires no cloud account or paid service.
+This repository runs a small three-tier application on a disposable kind cluster. It is a practical place to inspect Kustomize overlays, probes, resource limits, network policies, persistent storage, autoscaling and rollbacks without needing a cloud account.
 
 ## Architecture
 
@@ -117,16 +117,16 @@ The detailed incident procedure is in `docs/runbooks/troubleshooting.md`.
 
 - kind is disposable development infrastructure, not a production control plane.
 - PostgreSQL has one replica and no backup automation; cluster deletion destroys its local data.
-- Ingress uses HTTP only. Local TLS and certificate automation are future improvements.
+- Ingress uses HTTP only. Local TLS and certificate automation are outside the current scope.
 - HPA behavior is demonstrable but not a load-test benchmark.
 - Addon installation initially needs internet access to download manifests and images.
 - The production-style overlay still uses local placeholder Secrets and must not be deployed unchanged.
 
-## Future improvements
+## Next experiments
 
 Add local TLS, sealed or external secrets, PostgreSQL backups, API migrations with Alembic, OpenTelemetry, Prometheus/Grafana, policy-as-code admission, multi-architecture image builds, image signatures, Gateway API, and a chaos-testing scenario.
 
-## Interview talking points
+## Design questions
 
 - Why readiness depends on PostgreSQL while liveness does not.
 - Deployment rollout guarantees versus PDB guarantees.
@@ -135,7 +135,7 @@ Add local TLS, sealed or external secrets, PostgreSQL backups, API migrations wi
 - StatefulSet/PVC lifecycle and why one local database is not highly available.
 - Base/overlay reuse and the difference between production-style configuration and production infrastructure.
 
-See `DEMO.md`, `INTERVIEW.md`, `docs/explanations/kubernetes-concepts.md`, ADRs, and runbooks.
+See `DEMO.md`, `docs/design-notes.md`, `docs/explanations/kubernetes-concepts.md`, ADRs, and runbooks.
 
 ## License
 
