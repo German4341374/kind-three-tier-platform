@@ -2,7 +2,12 @@
 
 [![Kubernetes CI](https://github.com/German4341374/kind-three-tier-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/German4341374/kind-three-tier-platform/actions/workflows/ci.yml)
 
-This repository runs a small three-tier application on a disposable kind cluster. It is a practical place to inspect Kustomize overlays, probes, resource limits, network policies, persistent storage, autoscaling and rollbacks without needing a cloud account.
+Run a frontend, an API, and PostgreSQL on a kind cluster on your own computer.
+Then try changing the replica count, rolling out an update, or breaking a health check
+to see how Kubernetes responds.
+
+The repo includes Kustomize settings for development and a production-style example.
+Both are local exercises and don't need a cloud account.
 
 ## Architecture
 
